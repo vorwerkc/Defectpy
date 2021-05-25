@@ -16,14 +16,31 @@ class Density():
         
         self.read_data()
         
-    def read_data(self):
+    def read_data(self, ordering='xyz'):
         offset = self.natoms+6
         self.data = np.zeros(self.npoints)
-        for i in range(self.npoints[0]):
-            for j in range(self.npoints[1]):
-                for k in range(self.npoints[2]):
-                    line = self.natoms+6+i*self.npoints[1]*self.npoints[2]+j*self.npoints[2]+k
-                    self.data[i,j,k] = abs(float(self.file[line].strip().split()[0]))
+        # generate 1D list of data-points, irrespective of how the cube file is
+        # structure
+        data_ = []
+        for line in range(self.natoms+6,len(self.file)):
+            for entry in self.file[line].strip().split():
+                data_.append(float(entry))
+        # sort 1D data to 3D array, assuming x-y-z ordering
+        index = 0
+        if ordering == 'xyz':
+            for i in range(self.npoints[0]):
+                for j in range(self.npoints[1]):
+                    for k in range(self.npoints[2]):
+                        self.data[i,j,k] = abs(data_[index])
+                        index += 1
+        elif ordering == 'zyx':
+            for k in range(self.npoints[0]):
+                for j in range(self.npoints[1]):
+                    for i in range(self.npoints[2]):
+                        self.data[i,j,k] = abs(data_[index])
+                        index += 1
+        else:
+            print("Unknown ordering:", ordering)
     
     def integrate(self, box=None):
         if box == None:
