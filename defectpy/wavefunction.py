@@ -1,6 +1,6 @@
 import numpy as np
 
-Class Wavefunction():
+class Wavefunction():
     def __init__(self, file, volume, norm = 'qe', ordering = 'xyz'):
         self.file = open(file, 'r').readlines()
         self.natoms = int(self.file[2].split()[0])
