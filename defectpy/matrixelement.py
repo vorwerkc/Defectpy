@@ -22,14 +22,15 @@ class Matrixelement():
     def displacement(self):
         
         # shift r-vec to the center of the unit cell
-        call shift_r_vec([-0.5, -0.5, -0.5])
+        self.shift_r_vec([-0.5, -0.5, -0.5])
         # create ouput array
         int_r = np.zeros(3)
 
         for i in range(3):
-            int_r[i] = np.dot(wfct1.data.flatten(), (self.r_vec[i].flatten() *
-                wfct2.data.flatten())
+            int_r[i] = np.dot(wfct1.data.flatten(), (self.r_vec[i].flatten() * wfct2.data.flatten()))
 
         # get absolute units of matrix elements (atomic units)
         int_r = np.dot(int_r, self.unitcell)
+	
+        return int_r
 
