@@ -1,7 +1,7 @@
 import numpy as np
 
 class Density():
-    def __init__(self,file):
+    def __init__(self, file, volume, norm = 'qe', ordering = 'xyz'):
         self.file = open(file, 'r').readlines()
         self.natoms = int(self.file[2].split()[0])
         
@@ -14,9 +14,9 @@ class Density():
             self.delta[:,i] = [float(entry) for entry in self.file[3+i].split()[1:]]
         self.npoints = np.asarray(self.npoints)
         
-        self.read_data()
+        self.read_data(volume, ordering, norm)
         
-    def read_data(self, ordering='xyz'):
+    def read_data(self, volume, ordering='xyz', norm='qe'):
         offset = self.natoms+6
         self.data = np.zeros(self.npoints)
         # generate 1D list of data-points, irrespective of how the cube file is
@@ -31,17 +31,22 @@ class Density():
             for i in range(self.npoints[0]):
                 for j in range(self.npoints[1]):
                     for k in range(self.npoints[2]):
-                        self.data[i,j,k] = abs(data_[index])
+                        self.data[i,j,k] = np.sqrt(np.abs(data_[index]))*np.sign(data_[index])
                         index += 1
         elif ordering == 'zyx':
             for k in range(self.npoints[0]):
                 for j in range(self.npoints[1]):
                     for i in range(self.npoints[2]):
-                        self.data[i,j,k] = abs(data_[index])
+                        self.data[i,j,k] = np.sqrt(np.abs(data_[index]))*np.sign(data_[index])
                         index += 1
         else:
             print("Unknown ordering:", ordering)
-    
+        # set prefactor depending on what code produced the data:
+        if norm == 'qe':
+            self.data[:,:,:] = self.data[:,:,:] * np.sqrt( volume/(self.npoints[0]* self.npoints[1]*self.npoints[2]))
+        elif norm == 'west':
+            self.data[:,:,:] = self.data[:,:,:] * np.sqrt( 1.0 /(self.npoints[0]* self.npoints[1]*self.npoints[2]))
+
     def integrate(self, box=None):
         if box == None:
         # integrate the wavefunction over the whole unit cell (should be 1)
@@ -71,7 +76,8 @@ class Density():
                         break
                     count += 1
                 boundary[comp,1] = count
-            
-            npoints_ =self.npoints[0]*self.npoints[1]*self.npoints[2]
-            
-            return np.sum(self.data[boundary[0,0]:boundary[0,1],boundary[1,0]:boundary[1,1],boundary[2,0]:boundary[2,1]])/npoints_
+            # compute integral
+            slice_ = self.data[boundary[0,0]:boundary[0,1],boundary[1,0]:boundary[1,1],boundary[2,0]:boundary[2,1]])
+            integral_ = np.dot(slice_.flatten(), slice_.flatten())
+
+            return integral_
