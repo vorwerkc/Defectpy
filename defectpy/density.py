@@ -6,7 +6,7 @@ class Density(Wavefunction):
     def integrate(self, box=None):
         if box == None:
         # integrate the wavefunction over the whole unit cell (should be 1)
-            return np.sum(self.data)/(self.npoints[0]*self.npoints[1]*self.npoints[2])
+            return np.dot(self.data.flatten(), self.data.flatten())
         else:
         # integrate over specified box
             data_= []
@@ -33,7 +33,7 @@ class Density(Wavefunction):
                     count += 1
                 boundary[comp,1] = count
             # compute integral
-            slice_ = self.data[boundary[0,0]:boundary[0,1],boundary[1,0]:boundary[1,1],boundary[2,0]:boundary[2,1]])
+            slice_ = self.data[boundary[0,0]:boundary[0,1],boundary[1,0]:boundary[1,1],boundary[2,0]:boundary[2,1]]
             integral_ = np.dot(slice_.flatten(), slice_.flatten())
 
             return integral_
