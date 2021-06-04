@@ -77,7 +77,7 @@ class Density():
                     count += 1
                 boundary[comp,1] = count
             # compute integral
-            slice_ = self.data[boundary[0,0]:boundary[0,1],boundary[1,0]:boundary[1,1],boundary[2,0]:boundary[2,1]])
+            slice_ = self.data[boundary[0,0]:boundary[0,1],boundary[1,0]:boundary[1,1],boundary[2,0]:boundary[2,1]]
             integral_ = np.dot(slice_.flatten(), slice_.flatten())
 
             return integral_
