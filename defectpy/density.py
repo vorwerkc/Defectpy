@@ -50,7 +50,7 @@ class Density():
     def integrate(self, box=None):
         if box == None:
         # integrate the wavefunction over the whole unit cell (should be 1)
-            return np.sum(self.data)/(self.npoints[0]*self.npoints[1]*self.npoints[2])
+            return np.dot(self.data.flatten(), self.data.flatten())
         else:
         # integrate over specified box
             data_= []
