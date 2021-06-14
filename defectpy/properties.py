@@ -29,15 +29,15 @@ class absorption():
         self.invdiel = np.zeros((3,3,w.shape[0]),dtype = np.complex64)
         self.invdiel = np.einsum('ni,wn,nj->ijw', oscillator_strength, broad, oscillator_strength)
     
-        for i in range(invdiel.shape[2]):
+        for i in range(self.invdiel.shape[2]):
             self.invdiel[:,:,i]=np.eye(3)+self.invdiel[:,:,i]
     
         # caculate dielectric tensor by inversion
-        self.diel = np.zeros(invdiel.shape,dtype=np.complex64)
+        self.diel = np.zeros(self.invdiel.shape,dtype=np.complex64)
         for w in range(self.invdiel.shape[-1]):
             self.diel[:,:,w] = np.linalg.inv(self.invdiel[:,:,w])
         
-    def spectrum(local_fields=False):
+    def spectrum(self, local_fields=False):
         spectrum = np.zeros(self.diel.shape[-1])
         if not local_fields:
             norm = np.max(-(self.invdiel[0,0,:].imag+self.invdiel[1,1,:].imag+self.invdiel[2,2,:].imag))
