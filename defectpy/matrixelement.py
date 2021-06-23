@@ -75,15 +75,15 @@ class Matrixelement():
         displacement[:] = -1.0/energy_diff * grad[:]
 
         return displacement
+    @staticmethod
+    def radiative_rate(int_r, E, nD):
 
-    def radiative_rate(self, int_r, E, nD):
-
-        hartree = constants.physical_constants['Hartree energy in eV']
-        bohr_radius = constants.physical_constants['Bohr radius']
+        hartree = constants.physical_constants['Hartree energy in eV'][0]
+        bohr_radius = constants.physical_constants['Bohr radius'][0]
 
         value = (nD * (E * hartree * constants.eV )**3 * sum(int_r**2) \
                 *bohr_radius**2 * constants.e**2) / (3 * np.pi * \
-                scipy.constants.epsilon_0 * constants.c**3 *constants.hbar**4)
+                constants.epsilon_0 * constants.c**3 *constants.hbar**4)
 
         return value
 
