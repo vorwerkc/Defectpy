@@ -1,5 +1,6 @@
 import numpy as np
 from pyscf.fci.direct_spin1 import trans_rdm1
+import scipy.constants as constants
 
 class absorption():
 
@@ -44,4 +45,5 @@ class absorption():
             spectrum[:] = -(self.invdiel[0,0,:].imag+self.invdiel[1,1,:].imag+self.invdiel[2,2,:].imag)/norm
 
         return spectrum
-        
+
+
