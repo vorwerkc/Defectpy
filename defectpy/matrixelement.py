@@ -50,8 +50,7 @@ class Matrixelement():
 
         return int_g
     
-
-    %staticmethod
+    @staticmethod
     def gradient(wfct, r_vec):
         grad = np.zeros(r_vec.shape)
         for i in range(wfct.shape[0]):
@@ -69,7 +68,7 @@ class Matrixelement():
                     grad[2,i,j,k] = (wfct[i,j,pk] - wfct[i,j,pk])/(r_vec[2,i,j,pk] - r_vec[2,i,j,mk])
         return grad
 
-    %staticmethod
+    @staticmethod
     def gradient_to_displacement(grad,energy_diff):
         # allocate output
         displacement = np.zeros(3)
