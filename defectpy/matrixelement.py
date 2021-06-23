@@ -10,8 +10,10 @@ class Matrixelement():
         self.wfct2 = wfct2
         self.npoints = wfct1.npoints
         self.unitcell = unitcell
-        # build displacement vector r (no units)
-        self.r_vec = np.mgrid[0:self.npoints[0], 0:self.npoints[1], 0:self.npoints[1]] 
+        
+	# build displacement vector r (no units)
+        self.r_vec = np.mgrid[0:self.npoints[0], 0:self.npoints[1], 0:self.npoints[2]] 
+        
 
     def shift_r_vec(self, fraction):
         r_vec_ = np.zeros(self.r_vec.shape)
@@ -19,18 +21,15 @@ class Matrixelement():
         r_vec_[1] = self.r_vec[1] + fraction[1] * (self.r_vec[1,0,-1,0] - self.r_vec[1,0,0,0])
         r_vec_[2] = self.r_vec[2] + fraction[2] * (self.r_vec[2,0,0,-1] - self.r_vec[2,0,0,0])
          
-        # overwrite r_vec
-        self.r_vec[:,:,:,:] = r_vec_[:,:,:,:]
+        return r_vec_
 
-    def displacement(self):
+    def displacement(self, r_vec_):
         
-        # shift r-vec to the center of the unit cell
-        self.shift_r_vec([-0.5, -0.5, -0.5])
         # create ouput array
         int_r = np.zeros(3)
 
         for i in range(3):
-            int_r[i] = np.dot(self.wfct1.data.flatten(), (self.r_vec[i].flatten() * self.wfct2.data.flatten()))
+            int_r[i] = np.dot(self.wfct1.data.flatten(), (r_vec_[i].flatten() * self.wfct2.data.flatten()))
 
         # get absolute units of matrix elements (atomic units)
         int_r = np.dot(int_r, self.unitcell)
