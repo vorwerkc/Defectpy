@@ -38,12 +38,12 @@ class Matrixelement():
 
     def nabla(self):
         # calculate gradient of wfct2
-        grad_wfct2 = gradient(self.wfct2, self.r_vec)
+        grad_wfct2 = Matrixelement.gradient(self.wfct2.data, self.r_vec)
         # allocate output array
         int_g = np.zeros(3)
 
         for i in range(3):
-            int_g[i] = np.dot(wfct1.flatten(), grad_wfct2[i].flatten())
+            int_g[i] = np.dot(self.wfct1.data.flatten(), grad_wfct2[i].flatten())
         # get absolute units of matrix elements (atomic units)
         int_g = np.dot(int_g, np.linalg.inv(self.unitcell).T)
 
@@ -64,7 +64,7 @@ class Matrixelement():
 
                     grad[0,i,j,k] = (wfct[pi,j,k] - wfct[mi,j,k])/(r_vec[0,pi,j,k] - r_vec[0,mi,j,k])
                     grad[1,i,j,k] = (wfct[i,pj,k] - wfct[i,mj,k])/(r_vec[1,i,pj,k] - r_vec[1,i,mj,k])
-                    grad[2,i,j,k] = (wfct[i,j,pk] - wfct[i,j,pk])/(r_vec[2,i,j,pk] - r_vec[2,i,j,mk])
+                    grad[2,i,j,k] = (wfct[i,j,pk] - wfct[i,j,mk])/(r_vec[2,i,j,pk] - r_vec[2,i,j,mk])
         return grad
 
     @staticmethod
