@@ -62,9 +62,9 @@ class Matrixelement():
                     mj = j-1
                     mk = k-1
 
-                    grad[0,i,j,k] = (wfct[pi,j,k] - wfct[mi,j,k])/(r_vec[0,pi,j,k] - r_vec[0,mi,j,k])
-                    grad[1,i,j,k] = (wfct[i,pj,k] - wfct[i,mj,k])/(r_vec[1,i,pj,k] - r_vec[1,i,mj,k])
-                    grad[2,i,j,k] = (wfct[i,j,pk] - wfct[i,j,pk])/(r_vec[2,i,j,pk] - r_vec[2,i,j,mk])
+                    grad[0,i,j,k] = (wfct[pi,j,k] - wfct[mi,j,k])/(r_vec[0,1,0,0] - r_vec[0,0,0,0]) / 2
+                    grad[1,i,j,k] = (wfct[i,pj,k] - wfct[i,mj,k])/(r_vec[1,0,1,0] - r_vec[1,0,0,0]) / 2
+                    grad[2,i,j,k] = (wfct[i,j,pk] - wfct[i,j,pk])/(r_vec[2,0,0,1] - r_vec[2,0,0,0]) / 2
         return grad
 
     @staticmethod
