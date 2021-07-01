@@ -2,7 +2,11 @@ import numpy as np
 
 class Wavefunction():
     def __init__(self, file, volume, norm = 'qe', ordering = 'xyz'):
+        self.filename = file
         self.file = open(file, 'r').readlines()
+        self.volume = volume
+        self.norm = norm
+        self.ordering = ordering
         self.natoms = int(self.file[2].split()[0])
         
         self.npoints = []
@@ -15,6 +19,9 @@ class Wavefunction():
         self.npoints = np.asarray(self.npoints)
         
         self.read_data(volume, ordering, norm)
+    
+    def __copy__(self):
+      return type(self)(self.filename, self.volume, self.norm, self.ordering)
         
     def read_data(self, volume, ordering='xyz', norm='qe'):
         offset = self.natoms+6

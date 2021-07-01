@@ -14,14 +14,9 @@ class Matrixelement():
 	# build displacement vector r (no units)
         self.r_vec = np.mgrid[0:self.npoints[0], 0:self.npoints[1], 0:self.npoints[2]] 
         
+    def __copy__(self):
+      return type(self)(self.wfct1, self.wfct2, self.unitcell)
 
-    def shift_r_vec(self, fraction):
-        r_vec_ = np.zeros(self.r_vec.shape)
-        r_vec_[0] = self.r_vec[0] + fraction[0] * (self.r_vec[0,-1,0,0] - self.r_vec[0,0,0,0])
-        r_vec_[1] = self.r_vec[1] + fraction[1] * (self.r_vec[1,0,-1,0] - self.r_vec[1,0,0,0])
-        r_vec_[2] = self.r_vec[2] + fraction[2] * (self.r_vec[2,0,0,-1] - self.r_vec[2,0,0,0])
-         
-        return r_vec_
 
     def displacement(self, r_vec_):
         
@@ -86,4 +81,12 @@ class Matrixelement():
                 constants.epsilon_0 * constants.c**3 *constants.hbar**4)
 
         return value
-
+    
+    @staticmethod
+    def shift_r_vec(r_vec, fraction):
+        r_vec_ = np.zeros(r_vec.shape)
+        r_vec_[0] = r_vec[0] + fraction[0] * (r_vec[0,-1,0,0] - r_vec[0,0,0,0])
+        r_vec_[1] = r_vec[1] + fraction[1] * (r_vec[1,0,-1,0] - r_vec[1,0,0,0])
+        r_vec_[2] = r_vec[2] + fraction[2] * (r_vec[2,0,0,-1] - r_vec[2,0,0,0])
+         
+        return r_vec_
