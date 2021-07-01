@@ -53,7 +53,21 @@ class Wavefunction():
             self.data[:,:,:] = self.data[:,:,:] * np.sqrt( volume/(self.npoints[0]* self.npoints[1]*self.npoints[2]))
         elif norm == 'west':
             self.data[:,:,:] = self.data[:,:,:] * np.sqrt( 1.0 /(self.npoints[0]* self.npoints[1]*self.npoints[2]))
-    
+
+    def write_data(self, filename, ordering='xyz'):
+        with open(filename, 'a') as output:
+            # write header
+            for line in range(self.natoms+6):
+                output.write(self.file[line])
+            # write data
+            if ordering == 'xyz':
+                for i in range(self.data.shape[0]):
+                    for j in range(self.data.shape[1]):
+                        for k in range(self.data.shape[2]):
+                            output.write(self.data[i,j,k])
+            else:
+                print('Unknown ordering:', ordering)
+
     def integrate(self, box=None):
         if box == None:
         # integrate the wavefunction over the whole unit cell (should be 1)
