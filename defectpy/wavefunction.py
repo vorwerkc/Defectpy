@@ -55,7 +55,7 @@ class Wavefunction():
             self.data[:,:,:] = self.data[:,:,:] * np.sqrt( 1.0 /(self.npoints[0]* self.npoints[1]*self.npoints[2]))
 
     def write_data(self, filename, ordering='xyz'):
-        with open(filename, 'a') as output:
+        with open(filename, 'w') as output:
             # write header
             for line in range(self.natoms+6):
                 output.write(self.file[line])
@@ -64,7 +64,7 @@ class Wavefunction():
                 for i in range(self.data.shape[0]):
                     for j in range(self.data.shape[1]):
                         for k in range(self.data.shape[2]):
-                            output.write(self.data[i,j,k])
+                            output.write(str(self.data[i,j,k])+'\n')
             else:
                 print('Unknown ordering:', ordering)
 
