@@ -14,7 +14,7 @@ class absorption():
         self.w = w
         self.eta = eta
       
-        nr_transitions = len(evcs)-1
+        nr_transitions = len(self.evcs)-1
         transition = np.zeros((nr_transitions, active_space, active_space))
         
         # generate 1-particle transition matrix-elements
@@ -22,7 +22,7 @@ class absorption():
             transition[i,:,:] = trans_rdm1(evcs[0], evcs[i+1], active_space, nelec)
         
         # generate oscillator strength
-        oscillator_strength = np.einsum('vci,nvc -> ni', displacement, transition)
+        self.oscillator_strength = np.einsum('vci,nvc -> ni', displacement, transition)
     
         broad = np.zeros((w.shape[0], nr_transitions), dtype=np.complex64)
         
@@ -37,7 +37,8 @@ class absorption():
     
         # generate inverse dielectric tensor
         self.invdiel = np.zeros((3,3,w.shape[0]),dtype = np.complex64)
-        self.invdiel = np.einsum('ni,wn,nj->ijw', oscillator_strength, broad, oscillator_strength)
+        self.invdiel = np.einsum('ni,wn,nj->ijw', self.oscillator_strength, \
+                broad, self.oscillator_strength)
     
         for i in range(self.invdiel.shape[2]):
             self.invdiel[:,:,i]=np.eye(3)+self.invdiel[:,:,i]
@@ -50,9 +51,19 @@ class absorption():
     def spectrum(self, local_fields=False):
         spectrum = np.zeros(self.diel.shape[-1])
         if not local_fields:
-            norm = np.max(-(self.invdiel[0,0,:].imag+self.invdiel[1,1,:].imag+self.invdiel[2,2,:].imag))
-            spectrum[:] = -(self.invdiel[0,0,:].imag+self.invdiel[1,1,:].imag+self.invdiel[2,2,:].imag)
+            spectrum[:] = -(self.invdiel[0,0,:].imag+self.invdiel[1,1,:].imag\
+                    +self.invdiel[2,2,:].imag)
 
-        return spectrum, norm
+        return spectrum
+    
+    def rate(self,nD):
+        nr_transitions = len(self.evcs)-1
+        rate = np.zeros(nr_transitions)
+        for i in range(rate.shape[0]):
+            rate[i] = (nD*self.deltae[i]**3*constants.eV**3 \
+                    *sum(self.oscillator_strength[i,:]*1e10)**2*constants.e**2)\
+                    /(3*np.pi*constants.epsilon_0*constants.c**3*constants.hbar**4)
+
+        return rate
 
 
