@@ -5,6 +5,15 @@ import scipy.constants as constants
 class absorption():
 
     def __init__(self, evs, evcs, displacement, active_space, nelec, w, eta):
+        
+        self.evs = evs
+        self.evcs = evcs
+        self.displacement = displacement
+        self.active_space = active_space
+        self.nelec = nelec
+        self.w = w
+        self.eta = eta
+      
         nr_transitions = len(evcs)-1
         transition = np.zeros((nr_transitions, active_space, active_space))
         
@@ -42,8 +51,8 @@ class absorption():
         spectrum = np.zeros(self.diel.shape[-1])
         if not local_fields:
             norm = np.max(-(self.invdiel[0,0,:].imag+self.invdiel[1,1,:].imag+self.invdiel[2,2,:].imag))
-            spectrum[:] = -(self.invdiel[0,0,:].imag+self.invdiel[1,1,:].imag+self.invdiel[2,2,:].imag)/norm
+            spectrum[:] = -(self.invdiel[0,0,:].imag+self.invdiel[1,1,:].imag+self.invdiel[2,2,:].imag)
 
-        return spectrum
+        return spectrum, norm
 
 
